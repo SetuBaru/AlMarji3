@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المرجع | Al-Marji3 - Quran & Hadith RAG Knowledge Platform</title>
+  <meta name="description" content="Al-Marji3 (المرجع) is an authentic Islamic search & research platform powered by RAG vector search, ChromaDB, Holy Quran translations with Tafseer, and verified Hadith collections.">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☪️</text></svg>">
+</head>
+<body>
+  <!-- Decorative Background Layer -->
+  <div class="bg-pattern" aria-hidden="true"></div>
+  <div class="bg-radial-glow" aria-hidden="true"></div>
+
+  <div id="app">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="brand-container">
+        <button id="sidebarToggleBtn" class="btn-icon" title="Toggle Sidebar Navigation" aria-label="Toggle Sidebar Navigation">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+
+        <div class="brand-text">
+          <h1 class="brand-title">المرجع <span class="gold">Al-Marji3</span></h1>
+          <span class="brand-subtitle">Quran & Hadith RAG AI Platform</span>
+        </div>
+      </div>
+
+      <div class="header-center-controls">
+        <div id="statusBadge" class="status-badge" title="RAG Connection Status">
+          <span class="pulse-dot"></span>
+          <span id="statusText">Connecting RAG...</span>
+        </div>
+
+        <!-- Source Mode Switcher -->
+        <div class="top-k-selector">
+          <label for="sourceModeSelect">Knowledge Scope:</label>
+          <select id="sourceModeSelect" title="Select Knowledge Source Scope">
+            <option value="all" selected>📖 Quran + Hadith</option>
+            <option value="quran">🕋 Quran Verses & Tafsir</option>
+            <option value="hadith">📜 Prophetic Hadiths</option>
+          </select>
+        </div>
+
+        <div class="top-k-selector">
+          <label for="topKSelect">Top-K Evidence:</label>
+          <select id="topKSelect" title="Select Top-K retrieved sources count">
+            <option value="3">3 Sources</option>
+            <option value="5" selected>5 Sources</option>
+            <option value="7">7 Sources</option>
+            <option value="10">10 Sources</option>
+          </select>
+        </div>
+
+        <div class="top-k-selector">
+          <label for="collectionSelect">Collection:</label>
+          <select id="collectionSelect" title="Filter by Specific Hadith Collection">
+            <option value="all" selected>All Collections</option>
+            <option value="bukhari">Sahih al-Bukhari</option>
+            <option value="muslim">Sahih Muslim</option>
+            <option value="tirmidhi">Jami` at-Tirmidhi</option>
+            <option value="abudawud">Sunan Abi Dawud</option>
+            <option value="nasai">Sunan an-Nasa'i</option>
+            <option value="ibnmajah">Sunan Ibn Majah</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="apiDocsModalBtn" class="btn-icon" title="View REST API Specs" aria-label="API Docs">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </button>
+
+        <button id="bookmarksModalBtn" class="btn-icon" title="Saved Bookmarks Library" aria-label="Bookmarks">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </button>
+
+        <button id="drawerToggleBtn" class="btn-icon" title="Toggle Evidence Drawer" aria-label="Toggle Evidence Panel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h7"/>
+          </svg>
+        </button>
+
+        <button id="themeToggleBtn" class="btn-icon" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <!-- Populated dynamically via JS -->
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Body Container -->
+    <div class="main-content">
+      <!-- Left Sidebar Navigation -->
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Explorer Tools
+          </div>
+          <ul class="nav-list">
+            <li>
+              <a id="navLiveChatBtn" class="nav-item active" href="#">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Live RAG Chat
+              </a>
+            </li>
+            <li>
+              <a id="navSurahsBtn" class="nav-item" href="#">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                Quran Surahs Index
+              </a>
+            </li>
+            <li>
+              <a id="navHadithBooksBtn" class="nav-item" href="#">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Hadith Collections
+              </a>
+            </li>
+            <li>
+              <a id="navVerificationRulesBtn" class="nav-item" href="#">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Grounding & Rules
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section" style="flex: 1;">
+          <div class="sidebar-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+            Research Prompts
+          </div>
+          <ul class="nav-list">
+            <li><a class="nav-item" href="#" onclick="submitQuickQuery('What does the Quran say about seeking knowledge and wisdom?')">📖 Quran on Seeking Knowledge</a></li>
+            <li><a class="nav-item" href="#" onclick="submitQuickQuery('What did the Prophet (ﷺ) say about intentions and rewards?')">✨ Hadith on Intentions (Niyyah)</a></li>
+            <li><a class="nav-item" href="#" onclick="submitQuickQuery('What does the Quran say regarding patience (Sabr) in times of trial?')">🕋 Quran on Patience (Sabr)</a></li>
+            <li><a class="nav-item" href="#" onclick="submitQuickQuery('What is the Hadith regarding smiling being charity (Sadaqah)?')">❤️ Hadith on Smiling & Charity</a></li>
+            <li><a class="nav-item" href="#" onclick="submitQuickQuery('What are the Quranic verses and Hadiths on honor to parents?')">👨‍👩‍👧 Honor to Parents in Islam</a></li>
+          </ul>
+        </div>
+
+        <div class="rag-rules-card">
+          <h4>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Strict Grounding Policy
+          </h4>
+          <p>Al-Marji3 responds using only indexed Quranic verses with Tafsir and verified prophetic Hadith collections in ChromaDB. Un-grounded fabrications are strictly prohibited.</p>
+        </div>
+      </aside>
+
+      <!-- Center Chat Workspace -->
+      <main class="chat-workspace">
+        <div id="messagesContainer" class="messages-container">
+          <!-- Hero Banner displayed when chat is empty -->
+          <div id="welcomeHero" class="welcome-hero">
+            <div class="hero-symbol">
+              <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            
+            <h2 class="hero-arabic-heading">الْمَرْجِعُ فِي الْقُرْآنِ وَالْحَدِيثِ النَّبَوِيِّ</h2>
+            <h2 class="hero-title">Ask Al-Marji3 Islamic AI</h2>
+            <p class="hero-subtitle">
+              An evidence-grounded research assistant providing answers directly from the Holy Quran (with Tafsir) and authentic Hadith traditions using vector retrieval.
+            </p>
+
+            <div class="sample-prompts-grid">
+              <div class="prompt-card" data-prompt="What does the Quran say about patience (Sabr) and hardship?">
+                <span class="prompt-category">Holy Quran</span>
+                <span class="prompt-text">"What does the Quran say about patience (Sabr) and hardship?"</span>
+              </div>
+
+              <div class="prompt-card" data-prompt="What did the Prophet (ﷺ) say about intentions and rewards for deeds?">
+                <span class="prompt-category">Sahih al-Bukhari</span>
+                <span class="prompt-text">"What did the Prophet (ﷺ) say about intentions and rewards?"</span>
+              </div>
+
+              <div class="prompt-card" data-prompt="What are the Quranic verses and Hadiths on seeking knowledge?">
+                <span class="prompt-category">Quran & Sunnah</span>
+                <span class="prompt-text">"What are the virtues of seeking knowledge in Islam?"</span>
+              </div>
+
+              <div class="prompt-card" data-prompt="Explain the Hadith stating that smiling in the face of your brother is charity.">
+                <span class="prompt-category">Prophetic Manners</span>
+                <span class="prompt-text">"Explain the Hadith: 'Smiling in the face of your brother is charity.'"</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <div class="chat-input-wrapper">
+          <div class="chat-input-box">
+            <textarea id="userInput" placeholder="Ask any question about Quran verses, Tafsir, Hadiths, or prophetic guidance..." rows="1"></textarea>
+            <button id="sendBtn" class="btn-send" title="Send Question" aria-label="Send Question">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+          <div class="input-disclaimer">
+            Al-Marji3 responds exclusively based on indexed Quranic verses & authentic Hadith collections. Consult qualified Islamic scholars for personal rulings.
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Panel: Evidence Inspector Drawer -->
+      <aside id="evidenceDrawer" class="evidence-drawer">
+        <div class="drawer-header">
+          <div class="drawer-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 6h16M4 12h16M4 18h7"/>
+            </svg>
+            Retrieved Evidence (<span id="evidenceCount">0</span>)
+          </div>
+          <button onclick="toggleEvidenceDrawer()" class="btn-icon" style="width:30px; height:30px;" title="Close Panel">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <div id="evidenceList" class="evidence-list">
+          <div style="text-align: center; color: var(--text-muted); padding: 40px 10px; font-size: 0.85rem;">
+            Ask a question to view exact Quran verses, Tafsir commentary, Hadith references, and similarity match scores here.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Surahs Explorer Modal -->
+  <div id="surahsModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🕋 Holy Quran Surahs Index</h3>
+        <button id="closeSurahsBtn" class="btn-icon" style="width:32px; height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="surahsModalBody" class="modal-body">
+        <div style="margin-bottom: 16px;">
+          <input type="text" id="surahSearchInput" placeholder="Search Surah by English or Arabic name..." style="width: 100%; padding: 10px 14px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--gold-border); color: var(--text-primary); outline: none;">
+        </div>
+        <div id="surahsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hadith Collections Modal -->
+  <div id="hadithBooksModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📜 Hadith Collections Index</h3>
+        <button id="closeHadithBooksBtn" class="btn-icon" style="width:32px; height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="hadithBooksModalBody" class="modal-body">
+        <div id="hadithCollectionsGrid" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grounding & Verification Rules Modal -->
+  <div id="verificationRulesModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🛡️ Grounding & Verification Guidelines</h3>
+        <button id="closeVerificationRulesBtn" class="btn-icon" style="width:32px; height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary);">
+        <h4 style="color: var(--gold-light); margin-bottom: 8px;">1. Primary Source Distinction</h4>
+        <p style="margin-bottom: 12px;">Quran verses are primary divine revelations. Prophetic Hadiths represent the authentic Sunnah. Tafseer commentary is clearly separated from Quranic verses to maintain absolute textual integrity.</p>
+        
+        <h4 style="color: var(--gold-light); margin-bottom: 8px;">2. Zero Un-grounded Fabrication</h4>
+        <p style="margin-bottom: 12px;">The AI model is strictly prohibited from inventing narrators, Hadith numbers, Surah names, or Ayah numbers. Answers must cite retrieved ChromaDB vector entries.</p>
+        
+        <h4 style="color: var(--gold-light); margin-bottom: 8px;">3. Scholarly Citation Standards</h4>
+        <p>Quranic citations follow the standard `Surah Name (Surah:Ayah)` format. Hadith citations follow `Collection Name, Hadith #` standard format.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Documentation Modal -->
+  <div id="apiDocsModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box" style="max-width: 700px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⚡ Al-Marji3 REST API Documentation</h3>
+        <button id="closeApiDocsBtn" class="btn-icon" style="width:32px; height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="apiDocsModalBody" class="modal-body" style="font-size: 0.88rem; line-height: 1.6;">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Bookmarks Modal -->
+  <div id="bookmarksModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🔖 Saved Bookmarks Library</h3>
+        <button id="closeBookmarksBtn" class="btn-icon" style="width:32px; height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="bookmarksList" class="modal-body">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Card Generator Modal -->
+  <div id="shareModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title">🎨 Export Quote Card</h3>
+        <button id="closeShareBtn" class="btn-icon" style="width:32px; height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="shareCardPreview" class="hadith-share-card-preview">
+          <!-- Rendered dynamically -->
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button id="copyShareBtn" class="btn-msg-action highlight">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Text & Reference
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Area -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

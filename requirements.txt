@@ -1,0 +1,11 @@
+pandas
+chromadb
+ollama
+tqdm
+openpyxl
+flask
+flask-cors
+chromadb
+ollama
+pandas
+tqdm
