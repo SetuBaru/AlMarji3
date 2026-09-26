@@ -2,6 +2,8 @@
 
 > **Al-Marji3 (المرجع - *The Reference*)** is a state-of-the-art, evidence-grounded Islamic research platform and REST API powered by Retrieval-Augmented Generation (RAG). It provides intelligent, vector-backed answers strictly derived from the **Holy Quran** (English translation with classical Tafseer commentary) and authentic **Hadith collections** (*Sahih al-Bukhari*, *Sahih Muslim*, *Jami` at-Tirmidhi*, *Sunan Abi Dawud*, *Sunan an-Nasa'i*, and *Sunan Ibn Majah*).
 
+<img width="2559" height="1331" alt="Screenshot 2026-09-26 at 18 19 19" src="https://github.com/user-attachments/assets/3dd1d53f-5db6-47ac-979b-bd831915f082" />
+
 ---
 
 ## 🌟 Key Features
@@ -24,20 +26,7 @@
 
 ---
 
-## 📐 Architecture & Technology Stack
-
-```mermaid
-graph TD
-    User([User / Client App]) -->|HTTP / REST API| FlaskServer[Flask API Server (app.py)]
-    FlaskServer -->|Static Files| Frontend[HTML5 / Vanilla CSS3 / JavaScript ES6+]
-    FlaskServer -->|RAG Query| IslamicRAG[IslamicRAG Engine (rag.py)]
-    IslamicRAG -->|Vector Embeddings| OllamaEmbed[Ollama (mxbai-embed-large)]
-    IslamicRAG -->|Vector Similarity Query| ChromaDB[(ChromaDB Persistent Store)]
-    ChromaDB -->|Quran Collection| QuranData[Quran & Tafseer Dataset]
-    ChromaDB -->|Hadith Collection| HadithData[Cleaned Hadith Dataset]
-    IslamicRAG -->|LLM Synthesis| OllamaLLM[Ollama (qwen3.5:4b)]
-    OllamaLLM -->|Grounded Response| User
-```
+## Technology Stack
 
 - **Backend**: Python 3.11+, Flask 3.1, Flask-CORS, Pandas, TQDM.
 - **Vector Database**: ChromaDB (Persistent local vector storage).
